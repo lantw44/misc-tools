@@ -8,7 +8,7 @@
 	.c .C .cc .cxx .cpp .o .so .bin \
 	.txt .adoc .asciidoc .docbook \
 	.md .mkd .markdown \
-	.html .pdf
+	.html .tex .pdf
 
 # Defaults
 CP=          cp
@@ -99,4 +99,6 @@ ASCIIDOC_PDF_COMMAND_1=      $(ASCIIDOC_PDF_COMMAND_yes)
 ASCIIDOC_PDF_COMMAND_0=      $(ASCIIDOC_PDF_COMMAND_no)
 
 .asciidoc.pdf:
+	$(ASCIIDOC_PDF_COMMAND)
+.asciidoc.tex:
 	$(ASCIIDOC_PDF_COMMAND)
