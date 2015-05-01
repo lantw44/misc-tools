@@ -6,7 +6,7 @@ import urllib.request
 
 
 def get_upstream_version():
-    url = 'http://omahaproxy.appspot.com/all?os=linux&channel=stable'
+    url = 'https://omahaproxy.appspot.com/all?os=linux&channel=stable'
     data = urllib.request.urlopen(url).readall()
     return data.split(b'\n')[1].split(b',')[2].decode()
 
