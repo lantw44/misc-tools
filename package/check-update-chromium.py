@@ -21,7 +21,7 @@ def get_package_version_copr():
     data = json.loads(urllib.request.urlopen(url).readall().decode())
     for pkg in data['packages']:
         if pkg['pkg_name'] == 'chromium':
-            pkg_version = pkg['results']['fedora-22-x86_64']['pkg_version']
+            pkg_version = pkg['results']['fedora-23-x86_64']['pkg_version']
             return re.sub('\.fc[0-9]*$', '', pkg_version)
 
 get_package_version = get_package_version_copr
