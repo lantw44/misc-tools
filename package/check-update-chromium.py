@@ -16,7 +16,7 @@ def get_package_version_cgit():
     return spec.split('\nVersion:')[1].split()[0]
 
 def get_package_version_copr():
-    copr_api_url = 'https://copr.fedoraproject.org/api'
+    copr_api_url = 'https://copr.fedorainfracloud.org/api'
     url = copr_api_url + '/coprs/lantw44/chromium/monitor/'
     data = json.loads(urllib.request.urlopen(url).readall().decode())
     for pkg in data['packages']:
