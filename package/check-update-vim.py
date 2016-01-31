@@ -30,3 +30,4 @@ if len(sys.argv) >= 2:
 if parse_version(current) < parse_version(latest):
     print('Please update the vim package!')
     print('>>> latest = {}, packaged = {}'.format(latest, current))
+    exit(1)
