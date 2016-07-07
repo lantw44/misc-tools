@@ -54,7 +54,7 @@ def read_anitya_version(project_id,
     data = json.loads(data.decode())
     return data['version']
 
-def read_copr_version(repo, package, chroot,
+def read_copr_version(repo, package, chroot, raw = False,
         instance = 'https://copr.fedorainfracloud.org/api'):
     url = '{}/coprs/{}/monitor/'.format(instance, repo)
     data = urllib.request.urlopen(url).read()
@@ -62,6 +62,8 @@ def read_copr_version(repo, package, chroot,
     for pkg in data['packages']:
         if pkg['pkg_name'] == package:
             pkg_version = pkg['results'][chroot]['pkg_version']
+            if raw:
+                return pkg_version
             pkg_version = re.sub('\.centos', '', pkg_version)
             pkg_version = re.sub('\.el[0-9]+$', '', pkg_version)
             pkg_version = re.sub('\.fc[0-9]+$', '', pkg_version)
