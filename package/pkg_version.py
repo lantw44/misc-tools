@@ -43,6 +43,27 @@ def read_vim_version(
                 max_patch = patch
     return max_patch
 
+def read_openssl_version(version_prefix,
+        instance = 'ftp://ftp.openssl.org/source'):
+    url_parse_result = urllib.parse.urlparse(instance)
+    host = url_parse_result.netloc
+    root = url_parse_result.path
+    with ftplib.FTP(host) as ftp:
+        ftp.login()
+        ftp.cwd(root)
+        tars = ftp.nlst()
+        tar_pattern = r'^openssl-{}.*\.tar\.[a-z]z2?$'.format(version_prefix)
+        tar_iter = filter(
+            lambda x: re.match(tar_pattern, x), tars)
+        max_tar = '0'
+        for tar in tar_iter:
+            if tar > max_tar:
+                max_tar = tar
+        ver_pattern = r'^openssl-({}.*)\.tar\.[a-z]z2?$'.format(version_prefix)
+        max_ver = re.sub(ver_pattern, r'\1', max_tar)
+    return max_ver
+
+
 def read_rpm_spec_version(url):
     spec = urllib.request.urlopen(url).read()
     return spec.split(b'\nVersion:')[1].split()[0].decode()
