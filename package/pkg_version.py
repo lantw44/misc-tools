@@ -25,9 +25,9 @@ def read_vim_version(
         ftp.cwd('{}/unix'.format(root))
         tars = ftp.nlst()
         tar_iter = filter(
-            lambda x: re.match(r'vim-[0-9]+.[0-9]+\.tar\.[a-z]z2?', x), tars)
+            lambda x: re.match(r'^vim-[0-9]+.[0-9]+\.tar\.[a-z]z2?$', x), tars)
         ver_iter = map(
-            lambda x: re.sub(r'vim-(.+)\.tar\.[a-z]z2?$', r'\1', x), tar_iter)
+            lambda x: re.sub(r'^vim-(.+)\.tar\.[a-z]z2?$', r'\1', x), tar_iter)
         max_ver = '0'
         for ver in ver_iter:
             if LooseVersion(ver) > LooseVersion(max_ver):
