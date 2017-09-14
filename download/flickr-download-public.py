@@ -19,7 +19,7 @@ def flickr_request(page):
 	print('Retrieving information from page {} ...'.format(page), end='', flush=True)
 	info = urllib.request.urlopen(url)
 	print(' done')
-	return info.readall()
+	return info.read()
 
 def flickr_download(url):
 	fname = os.path.basename(urllib.parse.urlsplit(url).path)
@@ -30,7 +30,7 @@ def flickr_download(url):
 		return
 
 	print('Downloading {} ...'.format(url), end='', flush=True)
-	data = urllib.request.urlopen(url).readall()
+	data = urllib.request.urlopen(url).read()
 	print(' done')
 	f.write(data)
 	f.close()
