@@ -72,7 +72,7 @@ def read_anitya_version(project_id,
         instance = 'https://release-monitoring.org/api'):
     url = '{}/project/{}'.format(instance, project_id)
     data = urllib.request.urlopen(url).read()
-    data = json.loads(data.decode())
+    data = json.loads(data)
     return data['version']
 
 def read_copr_version(repo, package, chroot, raw = False, debug = False,
@@ -89,7 +89,7 @@ def read_copr_version(repo, package, chroot, raw = False, debug = False,
     projects_query_encoded = urllib.parse.urlencode(projects_query)
     projects_url = '{}/projects?{}'.format(instance, projects_query_encoded)
     data = urllib.request.urlopen(projects_url).read()
-    data = json.loads(data.decode())
+    data = json.loads(data)
     project_id = data['projects'][0]['project']['id']
     build_offset = 0
     build_limit = 10
@@ -102,7 +102,7 @@ def read_copr_version(repo, package, chroot, raw = False, debug = False,
             builds_query_encoded = urllib.parse.urlencode(builds_query)
             builds_url = '{}/builds?{}'.format(instance, builds_query_encoded)
             builds_data = urllib.request.urlopen(builds_url).read()
-            builds_data = json.loads(builds_data.decode())
+            builds_data = json.loads(builds_data)
         if build_offset % build_limit >= len(builds_data['builds']):
             break
         build_detail = builds_data['builds'][build_offset % build_limit]
@@ -121,7 +121,7 @@ def read_copr_version(repo, package, chroot, raw = False, debug = False,
         build_tasks_url = '{}/build_tasks?{}'.format(
             instance, build_tasks_query_encoded)
         build_tasks_data = urllib.request.urlopen(build_tasks_url).read()
-        build_tasks_data = json.loads(build_tasks_data.decode())
+        build_tasks_data = json.loads(build_tasks_data)
         for build_task in build_tasks_data['build_tasks']:
             build_task_chroot_name = build_task['build_task']['chroot_name']
             if build_task_chroot_name == chroot:
