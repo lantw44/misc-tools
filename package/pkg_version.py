@@ -76,55 +76,43 @@ def read_anitya_version(project_id,
     return data['version']
 
 def read_copr_version(repo, package, chroot, raw = False, debug = False,
-        instance = 'https://copr.fedorainfracloud.org/api_2'):
-    if repo.startswith('@'):
-        project_group, project_name = repo.split('@')[1].split('/')
-        projects_query = {'group': project_group, 'name': project_name}
-    elif repo.startswith('g/'):
-        project_group, project_name = repo.split('/')[1:]
-        projects_query = {'group': project_group, 'name': project_name}
+        instance = 'https://copr.fedorainfracloud.org/api_3'):
+    if repo.startswith('g/'):
+        groupname, projectname = repo.split('/')[1:]
+        ownername = '@' + groupname
     else:
-        project_owner, project_name = repo.split('/')
-        projects_query = {'owner': project_owner, 'name': project_name}
-    projects_query_encoded = urllib.parse.urlencode(projects_query)
-    projects_url = '{}/projects?{}'.format(instance, projects_query_encoded)
-    data = urllib.request.urlopen(projects_url).read()
-    data = json.loads(data)
-    project_id = data['projects'][0]['project']['id']
+        ownername, projectname = repo.split('/')
     build_offset = 0
     build_limit = 10
     while True:
         if build_offset % build_limit == 0:
             builds_query = {
-                'project_id': project_id,
+                'ownername': ownername,
+                'projectname': projectname,
+                'packagename': package,
+                'order': 'id',
+                'order_type': 'ASC',
                 'offset': build_offset,
                 'limit': build_limit}
             builds_query_encoded = urllib.parse.urlencode(builds_query)
-            builds_url = '{}/builds?{}'.format(instance, builds_query_encoded)
+            builds_url = '{}/build/list?{}'.format(
+                instance, builds_query_encoded)
             builds_data = urllib.request.urlopen(builds_url).read()
             builds_data = json.loads(builds_data)
-        if build_offset % build_limit >= len(builds_data['builds']):
+        if build_offset % build_limit >= len(builds_data['items']):
             break
-        build_detail = builds_data['builds'][build_offset % build_limit]
+        build_detail = builds_data['items'][build_offset % build_limit]
         build_offset += 1
-        build_id = build_detail['build']['id']
-        build_package_name = build_detail['build']['package_name']
-        build_package_version = build_detail['build']['package_version']
+        build_package_name = build_detail['source_package']['name']
+        build_package_version = build_detail['source_package']['version']
         if debug:
             print('{}'.format(build_offset), end = '\t')
             print('{}'.format(build_package_name), end = '\t')
             print('{}'.format(build_package_version), end = '\n')
         if build_package_name != package:
             continue
-        build_tasks_query = {'build_id': build_id}
-        build_tasks_query_encoded = urllib.parse.urlencode(build_tasks_query)
-        build_tasks_url = '{}/build_tasks?{}'.format(
-            instance, build_tasks_query_encoded)
-        build_tasks_data = urllib.request.urlopen(build_tasks_url).read()
-        build_tasks_data = json.loads(build_tasks_data)
-        for build_task in build_tasks_data['build_tasks']:
-            build_task_chroot_name = build_task['build_task']['chroot_name']
-            if build_task_chroot_name == chroot:
+        for build_chroot_name in build_detail['chroots']:
+            if build_chroot_name == chroot:
                 pkg_version = build_package_version
                 if not raw:
                     pkg_version = re.sub('\.centos', '', pkg_version)
