@@ -91,7 +91,7 @@ def read_copr_version(repo, package, chroot, raw = False, debug = False,
                 'projectname': projectname,
                 'packagename': package,
                 'order': 'id',
-                'order_type': 'ASC',
+                'order_type': 'DESC',
                 'offset': build_offset,
                 'limit': build_limit}
             builds_query_encoded = urllib.parse.urlencode(builds_query)
