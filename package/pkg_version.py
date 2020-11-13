@@ -95,7 +95,7 @@ def read_copr_version(repo, package, chroot, raw = False, debug = False,
                 'offset': build_offset,
                 'limit': build_limit}
             builds_query_encoded = urllib.parse.urlencode(builds_query)
-            builds_url = '{}/build/list?{}'.format(
+            builds_url = '{}/build/list/?{}'.format(
                 instance, builds_query_encoded)
             builds_data = urllib.request.urlopen(builds_url).read()
             builds_data = json.loads(builds_data)
